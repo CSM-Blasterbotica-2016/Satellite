@@ -1,0 +1,11 @@
+Setup:
+
+	1. Plug in power and ethernet to laptop
+	2. Start main.py
+	3. Hit '1' to start all processes for manual run
+	4. Hit '2' to start critical value monitor
+
+Driving:
+
+	1. Raise bucket ladder for driving
+	2. Dig dirt and dump it
