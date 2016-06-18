@@ -6,6 +6,8 @@ import rospy
 from std_msgs.msg import String
 from math import pi
 
+# Callback for subscriber to ROS excavation topic. Updates global variables with new values received
+# and calls update_screen function to redraw display
 def ex_callback(data):
 	global ex_list
 	ex_list = data.data.split(',')
@@ -13,6 +15,8 @@ def ex_callback(data):
 		ex_list = map(int, ex_list)
 		update_screen()
 
+# Callback for subscriber to ROS wheel information topic. Updates global variables with new values
+# received and calls update_screen function to redraw display
 def wh_callback(data):
 	global wh_list
 	wh_list = data.data.split(',')
@@ -20,6 +24,8 @@ def wh_callback(data):
 		wh_list = map(int, wh_list)
 		update_screen()
 
+# Top-level function. Draws screen in initial configuration, establishes variables, and starts ROS subscribers. 
+# Once all startup code has been run, enters into loop and waits for callback functions to be triggered
 def listener():
 	global screen_width, screen_height, myfont, pink, black, screen, wh_list, ex_list
 	screen_width = 1024
@@ -41,7 +47,8 @@ def listener():
 	while not rospy.is_shutdown():
 		rospy.spin()
 		
-
+# Calling this function will result in the screen being erased and redrawn to represent the current global 
+# variable values. 
 def update_screen():
 	global ex_list, wh_list, screen, pink
 	screen.fill(pink)
@@ -52,6 +59,7 @@ def update_screen():
 	make_bottom_rectangles((ex_list[:2] + wh_list))
 	pygame.display.update()
 
+# Helper function to draw bucket ladder related objects
 def make_bucket_ladder_positions(values):
 	global screen, black, myfont, screen_height, screen_width
 	label = myfont.render("Bucket Ladder Depth", 1, black)
@@ -69,6 +77,7 @@ def make_bucket_ladder_positions(values):
 			value = -1*(screen_height*3/8 - zero_point)*values[i]/9.5
 			pygame.draw.rect(screen, black, (screen_width*(5+i)/8.0, zero_point, screen_width/8-5, value), 0)
 
+# Helper function to draw dumping bucket-related object
 def make_dumping_bucket_circle(value):
 	global black, screen, screen_height, screen_width, myfont
 	label = myfont.render("Dumping Bucket Angle", 1, black)
@@ -84,7 +93,7 @@ def make_dumping_bucket_circle(value):
 	elif value < 0:
 		pygame.draw.arc(screen, black, size, pi, (180 - value)*pi/180.0, 90)
 
-
+# Helper function to draw all current monitor objects
 def make_bottom_rectangles(values):
 	global screen_width, screen_height, myfont, black, screen
 	vertical_offset = 20
